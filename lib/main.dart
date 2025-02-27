@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rick_and_morty/character_details.dart';
+import 'package:rick_and_morty/characters_list.dart';
 import 'characters_view_model.dart';
 
 void main() {
@@ -28,6 +30,8 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return ChangeNotifierProvider<CharactersViewModel>(
       create: (BuildContext context) => CharactersViewModel(),
       child: Consumer<CharactersViewModel>(
@@ -68,53 +72,23 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ],
               ),
-              body: Stack(
-                children: [
-                  ListView.builder(
-                    controller: data.listController,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    itemCount: data.filteredCharactersList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final character = data.filteredCharactersList[index];
-                      return Card(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.network(
-                              character.image ?? '',
-                              height: MediaQuery.of(context).size.height * 0.16,
-                              fit: BoxFit.cover,
-                            ),
-                            Expanded(
-                              child: ListTile(
-                                title: Text(character.name ?? ''),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Species: ${character.species ?? ''}'),
-                                    Text(
-                                        'Origin: ${character.origin?.name ?? ''}'),
-                                    Text('Gender: ${character.gender ?? ''}'),
-                                    Text('Status: ${character.status ?? ''}'),
-                                    Text(
-                                        'Location: ${character.location?.name ?? ''}'),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  if (data.isLoading)
-                    Center(
-                        child: CircularProgressIndicator(
-                      color: Colors.blue[300],
-                    ))
-                ],
-              ));
+              body: MediaQuery.of(context).orientation == Orientation.portrait
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: CharactersList())
+                  : Row(
+                      children: [
+                        SizedBox(
+                            width: size.width * 0.3, child: CharactersList()),
+                        data.filteredCharactersList.isNotEmpty
+                            ? SizedBox(
+                                width: size.width * 0.6,
+                                child: CharacterDetails(
+                                    data.filteredCharactersList[0]))
+                            : SizedBox(
+                                width: size.width * 0.6, child: SizedBox())
+                      ],
+                    ));
         },
       ),
     );
