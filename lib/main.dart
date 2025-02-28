@@ -43,22 +43,25 @@ class MyHomePage extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 title: data.showSearchBar
                     ? TextField(
-                        controller: TextEditingController(),
+                        controller: data.searchBarController,
+                    onChanged: (text) => data.onSearchChanged(text),
                         style: TextStyle(
                           color: Colors.white,
                         ),
                         decoration: InputDecoration(
-                            prefixIcon: Padding(
+                            suffixIcon: Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: Icon(Icons.search, color: Colors.white),
                             ),
-                            suffixIcon: IconButton(
+                            prefixIcon: IconButton(
                               icon: Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Icon(Icons.close),
                               ),
                               color: Colors.white,
-                              onPressed: () {},
+                              onPressed: () {
+                                data.clearSearch();
+                              }
                             ),
                             border: InputBorder.none,
                             hintText: 'Type character name',
@@ -80,7 +83,8 @@ class MyHomePage extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: CharactersList())
                   : SizedBox(
-                      child: Row(crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
                               width: size.width * 0.4, child: CharactersList()),
