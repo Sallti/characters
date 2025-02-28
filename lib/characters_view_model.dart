@@ -17,6 +17,9 @@ class CharactersViewModel with ChangeNotifier {
 
   String _searchNameText = '';
 
+  Character?
+  selectedCharacter;
+
   String get searchNameText => _searchNameText;
 
   set searchNameText(String value) {
@@ -65,4 +68,9 @@ class CharactersViewModel with ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+   setSelectedCharacter(Character selected) {
+    selectedCharacter = selected;
+    notifyListeners();
+   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty/character_details.dart';
 import 'package:rick_and_morty/characters_list.dart';
+import 'DeviceTypeAndOrientation.dart';
 import 'characters_view_model.dart';
 
 void main() {
@@ -31,6 +32,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final deviceType = getDeviceTypeAndOrientation(context);
 
     return ChangeNotifierProvider<CharactersViewModel>(
       create: (BuildContext context) => CharactersViewModel(),
@@ -72,22 +74,26 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ],
               ),
-              body: MediaQuery.of(context).orientation == Orientation.portrait
+              body: (deviceType == DeviceType.phonePortrait ||
+                      deviceType == DeviceType.tabletPortrait)
                   ? Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: CharactersList())
-                  : Row(
-                      children: [
-                        SizedBox(
-                            width: size.width * 0.3, child: CharactersList()),
-                        data.filteredCharactersList.isNotEmpty
-                            ? SizedBox(
-                                width: size.width * 0.6,
-                                child: CharacterDetails(
-                                    data.filteredCharactersList[0]))
-                            : SizedBox(
-                                width: size.width * 0.6, child: SizedBox())
-                      ],
+                  : SizedBox(
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                              width: size.width * 0.4, child: CharactersList()),
+                          data.filteredCharactersList.isNotEmpty
+                              ? SizedBox(
+                                  child: CharacterDetails(
+                                      data.selectedCharacter ??
+                                          data.filteredCharactersList[0]))
+                              : SizedBox(
+                                  width: size.width * 0.6,
+                                  child: SizedBox.shrink())
+                        ],
+                      ),
                     ));
         },
       ),
